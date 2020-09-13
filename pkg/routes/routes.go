@@ -6,5 +6,9 @@ import (
 )
 
 var RegisterRoutes = func(server *gin.Engine) {
-	server.GET("/health", controllers.Health)
+	v1 := server.Group("/api/v1")
+	{
+		v1.GET("/health", controllers.Health)
+		v1.POST("/upload", controllers.CreateProxy)
+	}
 }
