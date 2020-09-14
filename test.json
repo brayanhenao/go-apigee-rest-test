@@ -1,0 +1,13 @@
+{
+  "metaData": {
+    "createdAt": "1598892238552",
+    "createdBy": "bhenaoc@psl.com.co",
+    "lastModifiedBy": "bhenaoc@psl.com.co",
+    "subType": "null"
+  },
+  "name": "OpenApi-Petstore",
+  "revision": [
+    "1",
+    "2"
+  ]
+}

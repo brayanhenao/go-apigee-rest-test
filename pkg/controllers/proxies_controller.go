@@ -59,3 +59,31 @@ func CreateProxy(c *gin.Context) {
 		"ok": fmt.Sprintf("Proxy created! Revision up : %s", proxyRevision.Revision),
 	})
 }
+
+func GetProxy(c *gin.Context) {
+	name := c.Query("name")
+
+	apigeeService, err := utils.GetApigeeService()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	proxyNameAndOrganization := fmt.Sprintf("%s/apis/%s", utils.GetParent(), name)
+	res, err := apigeeService.Organizations.Apis.Get(proxyNameAndOrganization).Do()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"Proxy name":     res.Name,
+		"Proxy revision": res.Revision,
+	})
+}

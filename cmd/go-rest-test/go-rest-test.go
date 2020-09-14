@@ -1,11 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/brayanhenao/go-rest-test/pkg/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"google.golang.org/api/apigee/v1"
 	"log"
+	"os"
 	"time"
 )
 
@@ -15,6 +18,19 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	res, _ := os.Open("test.json")
+
+	object := apigee.GoogleCloudApigeeV1ApiProxy{}
+	err = json.NewDecoder(res).Decode(&object)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(object)
+
+	defer res.Close()
+
 	gin.ForceConsoleColor()
 	server := gin.New()
 	server.Use(gin.Recovery())

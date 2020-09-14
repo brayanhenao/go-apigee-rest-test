@@ -14,8 +14,8 @@ var RegisterRoutes = func(server *gin.Engine) {
 		proxies := v1.Group("/proxies")
 		{
 			proxies.POST("/upload", controllers.UploadFileTest)
-			proxies.POST("/create", controllers.CreateProxy)}
-		
+			proxies.POST("/create", controllers.CreateProxy)
+			proxies.GET("/get", controllers.GetProxy)
 		}
 	}
 }
