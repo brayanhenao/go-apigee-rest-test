@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/brayanhenao/go-rest-test/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"google.golang.org/api/apigee/v1"
 	"net/http"
 )
 
@@ -27,6 +26,7 @@ func UploadFileTest(c *gin.Context) {
 
 func CreateProxy(c *gin.Context) {
 	file, _ := c.FormFile("file")
+	proxyName := c.Query("name")
 	filename := fmt.Sprintf("proxies/%s", file.Filename)
 	if err := c.SaveUploadedFile(file, filename); err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
@@ -42,12 +42,7 @@ func CreateProxy(c *gin.Context) {
 		return
 	}
 
-	apiCall := apigeeService.Organizations.Apis.Create(utils.GetParent(), &apigee.GoogleApiHttpBody{
-		ContentType: "multipart/form-data",
-	}).Action("import").Name("test-go")
-
-	proxyRevision, err := apiCall.Do()
-
+	proxyRevision, _, err := apigeeService.Proxies.Import(proxyName, filename)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -56,7 +51,7 @@ func CreateProxy(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"ok": fmt.Sprintf("Proxy created! Revision up : %s", proxyRevision.Revision),
+		"ok": fmt.Sprintf("Proxy created! Revision up : %s", proxyRevision.Revision.String()),
 	})
 }
 
@@ -72,8 +67,7 @@ func GetProxy(c *gin.Context) {
 		return
 	}
 
-	proxyNameAndOrganization := fmt.Sprintf("%s/apis/%s", utils.GetParent(), name)
-	res, err := apigeeService.Organizations.Apis.Get(proxyNameAndOrganization).Do()
+	proxy, _, err := apigeeService.Proxies.Get(name)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -83,7 +77,9 @@ func GetProxy(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Proxy name":     res.Name,
-		"Proxy revision": res.Revision,
+		"revisions":      fmt.Sprintf("%v", proxy.Revisions),
+		"name":           proxy.Name,
+		"metadata":       proxy.MetaData,
+		"latestRevision": proxy.Revisions[len(proxy.Revisions)-1],
 	})
 }
