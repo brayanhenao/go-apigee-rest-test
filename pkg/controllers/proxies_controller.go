@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func UploadFileTest(c *gin.Context) {
+func UploadFileTest(c *gin.Context) { 
 	// Source
 	file, err := c.FormFile("file")
 	if err != nil {

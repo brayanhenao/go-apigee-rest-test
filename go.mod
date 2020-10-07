@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/kr/pretty v0.1.0
 	github.com/sethgrid/pester v1.1.0 // indirect
-	github.com/zambien/go-apigee-edge v0.0.0-20191101145538-e45257f96262
+	github.com/brayanhenao/go-apigee-edge v0.2.4
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	google.golang.org/api v0.31.0
 )

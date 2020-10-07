@@ -1,21 +1,21 @@
 package utils
 
 import (
-	"github.com/zambien/go-apigee-edge"
+	"github.com/brayanhenao/go-apigee-edge/apigee"
 	"log"
 	"os"
 )
 
-func GetApigeeService() (*apigee.EdgeClient, error) {
+func GetApigeeService() (*apigee.ApigeeClient, error) {
 	auth := GetAuth()
-	opts := apigee.EdgeClientOptions{
+	opts := apigee.ApigeeClientOptions{
 		MgmtUrl: "https://api.enterprise.apigee.com/",
 		Org:     os.Getenv("APIGEE_ORGANIZATION"),
 		Auth:    &auth,
 		Debug:   false,
 	}
 
-	client, err := apigee.NewEdgeClient(&opts)
+	client, err := apigee.NewApigeeClient(&opts)
 	if err != nil {
 		log.Printf("while initializing Edge client, error:\n%#v\n", err)
 		return client, err
