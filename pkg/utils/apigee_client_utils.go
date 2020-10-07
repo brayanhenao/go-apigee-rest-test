@@ -1,27 +1,25 @@
 package utils
 
 import (
-	"context"
-	"fmt"
-	"golang.org/x/oauth2"
-	"google.golang.org/api/apigee/v1"
-	"google.golang.org/api/option"
+	"github.com/brayanhenao/go-apigee-edge/apigee"
+	"log"
 	"os"
 )
 
-func GetApigeeService() (*apigee.Service, error) {
-	ctx := context.Background()
-	token := GetOauthToken()
-	apigeeService, err := apigee.NewService(ctx, option.WithTokenSource(oauth2.StaticTokenSource(token)))
-	if err != nil {
-		return nil, err
+func GetApigeeService() (*apigee.ApigeeClient, error) {
+	auth := GetAuth()
+	opts := apigee.ApigeeClientOptions{
+		MgmtUrl: "https://api.enterprise.apigee.com/",
+		Org:     os.Getenv("APIGEE_ORGANIZATION"),
+		Auth:    &auth,
+		Debug:   false,
 	}
 
-	apigeeService.BasePath = "https://api.enterprise.apigee.com/"
+	client, err := apigee.NewApigeeClient(&opts)
+	if err != nil {
+		log.Printf("while initializing Edge client, error:\n%#v\n", err)
+		return client, err
+	}
 
-	return apigeeService, nil
-}
-
-func GetParent() string {
-	return fmt.Sprintf("organizations/%s", os.Getenv("APIGEE_ORGANIZATION"))
+	return client, nil
 }
